@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import Account from "./Account";
-import { BankAccountType } from "../Interfaces/bankAccountType";
+import { BankAccountType } from "../Interfaces/BankAccountType";
 
 type Props = {
     bankAccounts: BankAccountType[];
