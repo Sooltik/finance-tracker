@@ -1,0 +1,243 @@
+:root {
+  --primary: #3498db;
+  /* Bright blue for primary actions */
+  --secondary: #2ecc71;
+  /* Fresh green for secondary accents */
+  --positive: #27ae60;
+  /* Slightly darker green for positive values */
+  --negative: #e74c3c;
+  /* Brighter red for better visibility */
+  --border: #34495e;
+  /* Dark blue-gray for borders */
+  --background: #1a1a2e;
+  /* Deep navy background */
+  --card-bg: #2c3e50;
+  /* Dark blue-gray for cards */
+  --text-color: #ecf0f1;
+  /* Off-white for text */
+  --input-bg: #34495e;
+  /* Dark background for inputs */
+  --input-border: #4a6a8b;
+  /* Lighter border for inputs */
+  --hover-opacity: 0.85;
+  --border-radius: 8px;
+  --transition-time: 0.3s;
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+hr {
+  margin-bottom: 1.2em
+}
+
+/* Container */
+.container {
+  margin: 0 auto;
+  padding: 2rem;
+  width: 60%;
+}
+
+/* Cards Container for Bank Accounts and Credit Cards */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* Financial Summary */
+.financial-summary {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  /* Allows wrapping if space runs out */
+  width: 100%;
+}
+
+.summary-item {
+  flex: 1;
+  /* Makes items equally share available space */
+  min-width: 250px;
+  /* Ensures responsiveness */
+  max-width: 400px;
+  /* Prevents excessive stretching */
+  padding: 2rem;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+
+.summary-item h2 {
+  font-size: 1.4rem;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.amount {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.positive {
+  color: var(--secondary);
+}
+
+.negative {
+  color: var(--negative);
+}
+
+/* Bank Account Card */
+.bank-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 25rem;
+  display: grid;
+  margin: 1rem;
+}
+
+/* Credit Card Card */
+.credit-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  display: grid;
+  margin: 1rem;
+}
+
+.bank-card.selected {
+  border-color: var(--primary);
+  background-color: #34495e;
+}
+
+.credit-card.selected {
+  border-color: var(--primary);
+  background-color: #34495e;
+}
+
+.section-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+/* Account Cards inside a Bank Card */
+.account-item {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius);
+  padding: 0.8rem 1rem;
+  margin: 0.5rem 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: var(--transition-time);
+  display: grid;
+}
+
+.account-item:hover {
+  background: var(--border);
+}
+
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-time);
+  font-weight: 500;
+  margin: 0.3em;
+  width: 100%;
+}
+
+button:hover {
+  opacity: var(--hover-opacity);
+  transform: translateY(-1px);
+}
+
+button.cancel {
+  background: var(--negative);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Form */
+.input-form {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0;
+  width: 100%;
+  padding: 1rem;
+}
+
+.input-form input {
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  transition: border-color var(--transition-time);
+}
+
+.input-form input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+/* Additional Contrast Improvements */
+h1,
+h2,
+h3 {
+  color: var(--text-color);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--card-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
