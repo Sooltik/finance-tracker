@@ -1,6 +1,7 @@
-import { FC, useState } from "react";
-
+import { FC, useEffect, useState } from "react";
+import axios from 'axios';
 interface CreditCardType {
+    id: number;
     name: string;
     balance: number;
 }
@@ -12,21 +13,50 @@ type Props = {
 };
 
 const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit }) => {
-    const [newCreditCardName, setNewCreditCardName] = useState<string>("");
+    const [creditCardName, setCreditCardName] = useState<string>("");
     const [showAddCreditCard, setShowAddCreditCard] = useState<boolean>(false);
 
-    const handleAddCreditCard = () => {
-        if (newCreditCardName.trim() === "") return;
-
-        const newCreditCard: CreditCardType = {
-            name: newCreditCardName,
-            balance: 0,
+    useEffect(() => {
+        const getCreditCards = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/get-credit-cards');
+                setCreditCards(response.data);
+                console.log('creditCards: ', creditCards);
+            } catch (error) {
+                console.error("Error fetching credit cards:", error);
+            }
         };
+        getCreditCards();
+    }, []);
 
-        setCreditCards([...creditCards, newCreditCard]);
-        setNewCreditCardName("");
-        setShowAddCreditCard(false);
+
+    const handleAddCreditCard = async () => {
+        if (creditCardName.trim() === "") return;
+
+        try {
+            const response = await axios.post('http://localhost:5000/add-credit-card', {
+                name: creditCardName,
+                balance: 0,
+            });
+
+            setCreditCards([...creditCards, response.data.data]);
+            setCreditCardName("");
+            setShowAddCreditCard(false);
+        } catch (err) {
+            console.error("Error adding credit card", err);
+        }
     };
+
+    const handleDeleteCreditCard = async (id: number) => {
+        try {
+            await axios.delete(`http://localhost:5000/delete-credit-card/${id}`);
+
+            setCreditCards(creditCards.filter(card => card.id !== id));
+        } catch (err) {
+            console.error("Error deleting credit card", err);
+        }
+    };
+
 
     return (
         <div>
@@ -43,8 +73,8 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
                     <input
                         className="input-form"
                         type="text"
-                        value={newCreditCardName}
-                        onChange={(e) => setNewCreditCardName(e.target.value)}
+                        value={creditCardName}
+                        onChange={(e) => setCreditCardName(e.target.value)}
                         placeholder="Enter credit card name"
                     />
                     <div className="form-actions">
@@ -64,6 +94,9 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
             {creditCards.length > 0 ? (
                 creditCards.map((creditCard, creditIndex) => (
                     <div key={creditIndex} className="credit-card">
+                        <button className="delete-button" onClick={() => handleDeleteCreditCard(creditCard.id)}>
+                            ❌
+                        </button>
                         <button onClick={() => setSelectedCredit({ creditIndex })}>
                             <h3>{creditCard.name}: {creditCard.balance}$</h3>
                         </button>
