@@ -4,25 +4,12 @@ import SubmitForm from "./Components/SubmitForm";
 import FinancialSummary from "./Components/FinancialSummary";
 import BankAccount from "./Components/BankAccount";
 import CreditCard from "./Components/CreditCard";
-
-interface AccountType {
-  name: string;
-  balance: number;
-}
-
-interface BankAccountType {
-  bankName: string;
-  accounts: AccountType[];
-}
-
-interface CreditCardType {
-  name: string;
-  balance: number;
-}
+import { BankAccountsType } from "./Interfaces/BankAccountsType";
+import { CreditCardsType } from "./Interfaces/CreditCardsType";
 
 const App = () => {
-  const [bankAccounts, setBankAccounts] = useState<BankAccountType[]>([]);
-  const [creditCards, setCreditCards] = useState<CreditCardType[]>([]);
+  const [bankAccounts, setBankAccounts] = useState<BankAccountsType[]>([]);
+  const [creditCards, setCreditCards] = useState<CreditCardsType[]>([]);
   const [assets, setAssets] = useState<number>(0);
   const [liabilities, setLiabilities] = useState<number>(0);
   const [selectedAccount, setSelectedAccount] = useState<{ bankIndex: number; accountIndex: number } | null>(null);

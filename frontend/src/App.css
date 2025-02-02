@@ -48,7 +48,7 @@ hr {
 .container {
   margin: 0 auto;
   padding: 2rem;
-  width: 60%;
+  width: 100%;
 }
 
 /* Cards Container for Bank Accounts and Credit Cards */
@@ -66,17 +66,11 @@ hr {
   justify-content: space-between;
   margin-bottom: 3rem;
   flex-wrap: wrap;
-  /* Allows wrapping if space runs out */
   width: 100%;
 }
 
 .summary-item {
   flex: 1;
-  /* Makes items equally share available space */
-  min-width: 250px;
-  /* Ensures responsiveness */
-  max-width: 400px;
-  /* Prevents excessive stretching */
   padding: 2rem;
   background-color: var(--card-bg);
   border-radius: var(--border-radius);
