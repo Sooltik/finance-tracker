@@ -1,11 +1,11 @@
-export interface AccountsType {
+export interface AccountType {
     id?: number;
     name: string;
     balance: number;
 }
 
-export interface BankAccountsType {
+export interface BankAccountType {
     id?: number;
     bankName: string;
-    accounts: AccountsType[];
+    accounts: AccountType[];
 }

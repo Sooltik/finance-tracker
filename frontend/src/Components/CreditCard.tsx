@@ -19,7 +19,7 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
     useEffect(() => {
         const getCreditCards = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/get-credit-cards');
+                const response = await axios.get('http://localhost:5000/credit-card');
                 setCreditCards(response.data);
                 console.log('creditCards: ', creditCards);
             } catch (error) {
@@ -34,7 +34,7 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
         if (creditCardName.trim() === "") return;
 
         try {
-            const response = await axios.post('http://localhost:5000/add-credit-card', {
+            const response = await axios.post('http://localhost:5000/credit-card', {
                 name: creditCardName,
                 balance: 0,
             });
@@ -49,7 +49,7 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
 
     const handleDeleteCreditCard = async (id: number) => {
         try {
-            await axios.delete(`http://localhost:5000/delete-credit-card/${id}`);
+            await axios.delete(`http://localhost:5000/credit-card/${id}`);
 
             setCreditCards(creditCards.filter(card => card.id !== id));
         } catch (err) {

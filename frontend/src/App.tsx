@@ -4,11 +4,11 @@ import SubmitForm from "./Components/SubmitForm";
 import FinancialSummary from "./Components/FinancialSummary";
 import BankAccount from "./Components/BankAccount";
 import CreditCard from "./Components/CreditCard";
-import { BankAccountsType } from "./Interfaces/BankAccountsType";
-import { CreditCardsType } from "./Interfaces/CreditCardsType";
+import { BankAccountType as BankAccountType } from "./Interfaces/BankAccountType";
+import { CreditCardsType } from "./Interfaces/CreditCardType";
 
 const App = () => {
-  const [bankAccounts, setBankAccounts] = useState<BankAccountsType[]>([]);
+  const [bankAccounts, setBankAccounts] = useState<BankAccountType[]>([]);
   const [creditCards, setCreditCards] = useState<CreditCardsType[]>([]);
   const [assets, setAssets] = useState<number>(0);
   const [liabilities, setLiabilities] = useState<number>(0);
