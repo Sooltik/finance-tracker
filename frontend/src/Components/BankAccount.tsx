@@ -1,10 +1,10 @@
 import { FC, useState } from "react";
 import Account from "./Account";
-import { BankAccountsType } from "../Interfaces/BankAccountsType";
+import { BankAccountType as BankAccountType } from "../Interfaces/BankAccountType";
 
 type Props = {
-    bankAccounts: BankAccountsType[];
-    setBankAccounts: (banks: BankAccountsType[]) => void;
+    bankAccounts: BankAccountType[];
+    setBankAccounts: (banks: BankAccountType[]) => void;
     setSelectedAccount: (account: { bankIndex: number; accountIndex: number } | null) => void;
 };
 
@@ -18,7 +18,7 @@ const BankAccount: FC<Props> = ({ bankAccounts, setBankAccounts, setSelectedAcco
     const handleAddBank = () => {
         if (newBankName.trim() === "") return;
 
-        const newBank: BankAccountsType = {
+        const newBank: BankAccountType = {
             bankName: newBankName,
             accounts: [],
         };
