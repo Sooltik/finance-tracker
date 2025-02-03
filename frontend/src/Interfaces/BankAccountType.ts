@@ -1,11 +1,11 @@
 export interface AccountType {
-    id?: number;
+    id: number;
     name: string;
     balance: number;
 }
 
 export interface BankAccountType {
-    id?: number;
-    bankName: string;
+    id: number;
+    name: string;
     accounts: AccountType[];
 }

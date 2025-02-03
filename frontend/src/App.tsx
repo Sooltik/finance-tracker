@@ -17,11 +17,11 @@ const App = () => {
   const [inputValue, setInputValue] = useState<string>("");
 
   useEffect(() => {
-    const totalAssets = bankAccounts.reduce((sum: number, bank) =>
-      sum + bank.accounts.reduce((accSum, acc) => accSum + acc.balance, 0),
-      0
-    );
-    setAssets(totalAssets);
+    const totalBalance = (bankAccounts || []).reduce((sum, bank) => {
+      return sum + (bank.accounts ? bank.accounts.reduce((accSum, acc) => accSum + acc.balance, 0) : 0);
+  }, 0);
+  
+    setAssets(totalBalance);
     const totalLiabilities = creditCards.reduce((sum: number, credit) => sum + credit.balance, 0);
     setLiabilities(totalLiabilities);
   }, [bankAccounts, creditCards]);
