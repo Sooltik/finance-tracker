@@ -19,9 +19,8 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
     useEffect(() => {
         const getCreditCards = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/credit-card');
+                const response = await axios.get('http://localhost:5000/credit-cards');
                 setCreditCards(response.data);
-                console.log('creditCards: ', creditCards);
             } catch (error) {
                 console.error("Error fetching credit cards:", error);
             }
@@ -34,7 +33,7 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
         if (creditCardName.trim() === "") return;
 
         try {
-            const response = await axios.post('http://localhost:5000/credit-card', {
+            const response = await axios.post('http://localhost:5000/credit-cards', {
                 name: creditCardName,
                 balance: 0,
             });
@@ -49,7 +48,7 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
 
     const handleDeleteCreditCard = async (id: number) => {
         try {
-            await axios.delete(`http://localhost:5000/credit-card/${id}`);
+            await axios.delete(`http://localhost:5000/credit-cards/${id}`);
 
             setCreditCards(creditCards.filter(card => card.id !== id));
         } catch (err) {
@@ -94,11 +93,11 @@ const CreditCard: FC<Props> = ({ creditCards, setCreditCards, setSelectedCredit 
             {creditCards.length > 0 ? (
                 creditCards.map((creditCard, creditIndex) => (
                     <div key={creditIndex} className="credit-card">
-                        <button className="delete-button" onClick={() => handleDeleteCreditCard(creditCard.id)}>
-                            ❌
-                        </button>
                         <button onClick={() => setSelectedCredit({ creditIndex })}>
                             <h3>{creditCard.name}: {creditCard.balance}$</h3>
+                        </button>
+                        <button className="delete-button" onClick={() => handleDeleteCreditCard(creditCard.id)}>
+                            Delete Credit Card ❌
                         </button>
                     </div>
                 ))

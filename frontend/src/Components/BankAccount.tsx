@@ -1,45 +1,111 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Account from "./Account";
-import { BankAccountType as BankAccountType } from "../Interfaces/BankAccountType";
+import { BankAccountType } from "../Interfaces/BankAccountType";
+import axios from "axios";
 
 type Props = {
     bankAccounts: BankAccountType[];
-    setBankAccounts: (banks: BankAccountType[]) => void;
+    setBankAccounts: React.Dispatch<React.SetStateAction<BankAccountType[]>>;
     setSelectedAccount: (account: { bankIndex: number; accountIndex: number } | null) => void;
 };
 
 const BankAccount: FC<Props> = ({ bankAccounts, setBankAccounts, setSelectedAccount }) => {
-    const [newBankName, setNewBankName] = useState<string>("");
+    const [bankName, setBankName] = useState<string>("");
     const [selectedBankIndex, setSelectedBankIndex] = useState<number | null>(null);
-    const [newAccountName, setNewAccountName] = useState<string>("");
+    const [accountName, setAccountName] = useState<string>("");
     const [showAddAccount, setShowAddAccount] = useState<boolean>(false);
     const [showAddBankInput, setShowAddBankInput] = useState<boolean>(false);
 
-    const handleAddBank = () => {
-        if (newBankName.trim() === "") return;
-
-        const newBank: BankAccountType = {
-            bankName: newBankName,
-            accounts: [],
+    useEffect(() => {
+        const getBankAccounts = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/bank-accounts');
+                setBankAccounts(response.data);
+            } catch (error) {
+                console.error("Error fetching bank accounts:", error);
+            }
         };
+        getBankAccounts();
+    }, [bankName, accountName]);
 
-        setBankAccounts([...bankAccounts, newBank]);
-        setNewBankName("");
-        setShowAddBankInput(false);
+    const handleAddBank = async () => {
+        if (bankName.trim() === "") return;
+
+        try {
+            const response = await axios.post('http://localhost:5000/bank-accounts', {
+                name: bankName,
+            });
+            const newBank = { ...response.data, accounts: response.data.accounts || [] };
+            setBankAccounts([...bankAccounts, newBank]);
+            setBankName("");
+            setShowAddBankInput(false);
+        } catch (err) {
+            console.error("Error adding bank account", err);
+        }
     };
 
-    const handleAddAccount = () => {
-        if (newAccountName.trim() === "" || selectedBankIndex === null) return;
 
-        const updatedBanks = [...bankAccounts];
-        updatedBanks[selectedBankIndex].accounts.push({
-            name: newAccountName,
-            balance: 0,
-        });
+    const handleDeleteBankAccount = async (id: number) => {
+        try {
+            await axios.delete(`http://localhost:5000/bank-accounts/${id}`);
+            setBankAccounts(bankAccounts.filter(bank => bank.id !== id));
+        } catch (err) {
+            console.error("Error deleting bank account", err);
+        }
+    };
 
-        setBankAccounts(updatedBanks);
-        setNewAccountName("");
-        setShowAddAccount(false);
+    const handleAddAccount = async () => {
+        if (accountName.trim() === "" || selectedBankIndex === null) return;
+
+        const selectedBank = bankAccounts[selectedBankIndex];
+        if (!selectedBank) return;
+
+        try {
+            const response = await axios.post(
+                `http://localhost:5000/bank-accounts/${selectedBank.id}/accounts`,
+                {
+                    name: accountName,
+                    balance: 0,
+                    bank_account_id: selectedBank.id,
+                }
+            );
+
+            setBankAccounts(prevBanks =>
+                prevBanks.map(bank =>
+                    bank.id === selectedBank.id
+                        ? { ...bank, accounts: [...bank.accounts, response.data] }
+                        : bank
+                )
+            );
+
+            setAccountName("");
+            setShowAddAccount(false);
+        } catch (err) {
+            console.error("Error adding account", err);
+        }
+    };
+
+    const handleDeleteAccount = async (bankId: number, accountId: number) => {
+        try {
+            await axios.delete(
+                `http://localhost:5000/bank-accounts/${bankId}/accounts/${accountId}`
+            );
+    
+            // Update state to remove the deleted account
+            setBankAccounts(prevBanks =>
+                prevBanks.map(bank => {
+                    if (bank.id === bankId) {
+                        return {
+                            ...bank,
+                            accounts: bank.accounts.filter(acc => acc.id !== accountId)
+                        };
+                    }
+                    return bank;
+                })
+            );
+        } catch (err) {
+            console.error("Error deleting account:", err);
+        }
     };
 
     const handleBankSelect = (bankIndex: number) => {
@@ -66,8 +132,8 @@ const BankAccount: FC<Props> = ({ bankAccounts, setBankAccounts, setSelectedAcco
                     <input
                         className="input-form"
                         type="text"
-                        value={newBankName}
-                        onChange={(e) => setNewBankName(e.target.value)}
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
                         placeholder="Bank name"
                     />
                     <div className="form-actions">
@@ -91,32 +157,44 @@ const BankAccount: FC<Props> = ({ bankAccounts, setBankAccounts, setSelectedAcco
                 <p>No banks have been added yet</p>
             ) : (
                 bankAccounts.map((bank, bankIndex) => (
-                    <div key={bankIndex} className="bank-card">
+                    <div key={bank?.id ?? `bank-${bankIndex}`} className="bank-card">
                         <button onClick={() => handleBankSelect(bankIndex)}>
-                            <h3>{bank.bankName}</h3>
+                            <h3>{bank?.name}</h3>
+                        </button>
+                        <button className="delete-button" onClick={() => handleDeleteBankAccount(bank?.id)}>
+                            Delete Bank Account ❌
                         </button>
                         <div className="account-item">
-                            {bank.accounts.length > 0 ? (
-                                bank.accounts.map((account, accIndex) => (
-                                    <Account
-                                        key={accIndex}
-                                        accountName={account.name}
-                                        accountBalance={account.balance}
-                                        onSelect={() => setSelectedAccount({ bankIndex, accountIndex: accIndex })}
-                                    />
-                                ))
+                            {(bank.accounts || []).length > 0 ? (
+                                (bank.accounts || []).map((account) => (
+                                    <div key={`${bank?.id}-temp-${Math.random()}`}>
+                                        <Account
+                                            name={account?.name}
+                                            balance={account?.balance}
+                                            onSelect={() =>
+                                                setSelectedAccount({
+                                                    bankIndex,
+                                                    accountIndex: bank.accounts.indexOf(account),
+                                                })
+                                            }
+                                            onDelete={() => handleDeleteAccount(bank.id, account.id)}
+                                        />
+                                    </div>
+                                )
+                                )
                             ) : (
                                 <p>No accounts added yet</p>
                             )}
+
                         </div>
                         {selectedBankIndex === bankIndex && showAddAccount && (
                             <div>
-                                <h4>Add an Account to {bank.bankName}</h4>
+                                <h4>Add an Account to {bank?.name}</h4>
                                 <input
                                     className="input-form"
                                     type="text"
-                                    value={newAccountName}
-                                    onChange={(e) => setNewAccountName(e.target.value)}
+                                    value={accountName}
+                                    onChange={(e) => setAccountName(e.target.value)}
                                     placeholder="Enter account name"
                                 />
                                 <div className="form-actions">

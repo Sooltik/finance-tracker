@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import creditCardRoutes from './routes/creditCardRoute.js';
+import Routes from './routes/Routes';
 
 dotenv.config();
 const app = express();
@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/credit-card', creditCardRoutes);
+app.use('/', Routes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

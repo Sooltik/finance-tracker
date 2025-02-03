@@ -10,3 +10,15 @@ Finance Tracker is a simple and efficient application designed to help users man
     * [`/routes`](./backend/src/routes): folder containing the routes called by the routers
     * [`/data`](./backend/src/data): folder containing the data layer calling the POSTGRESQL database
     * [`/services`](./backend/src/services): folder containing the business logic of the application
+
+## APIs
+GET    /credit-cards
+POST   /credit-cards
+DELETE /credit-cards/:id
+
+GET    /bank-accounts
+POST   /bank-accounts
+DELETE /bank-accounts/:id
+
+POST   /bank-accounts/:bankId/accounts
+DELETE /bank-accounts/:bankId/accounts/:accountId
